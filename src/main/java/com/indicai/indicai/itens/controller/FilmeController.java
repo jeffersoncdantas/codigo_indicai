@@ -1,10 +1,11 @@
 package com.indicai.indicai.itens.controller;
+
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,44 +26,62 @@ public class FilmeController {
   @Autowired
   private FilmeRepository repository;
 
-  public FilmeController(){}
+  public FilmeController() {
+  }
 
   @GetMapping("/filmes")
   public List<Filme> getFilmes() {
-      return repository.findAll();
+    return repository.findAll();
   }
 
   @GetMapping("/filmes/{id}")
   public Optional<Filme> getFilme(@PathVariable long id) {
-      Optional<Filme> opt = repository.findById(id);
-      
-      if(opt.isPresent()){
-          return opt;
-      } throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao buscar filme com id " + id);
-  } 
+    Optional<Filme> opt = repository.findById(id);
+
+    if (opt.isPresent()) {
+      return opt;
+    }
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao buscar filme com id " + id);
+  }
 
   @PostMapping("/filmes")
-  //@PreAuthorize("hasRole('ADMIN')")
+  // @PreAuthorize("hasRole('ADMIN')")
   public Filme postFilme(@RequestBody Filme filme) {
-      return repository.save(filme);
+    return repository.save(filme);
   }
 
   @PutMapping("/filmes/{filmeId}")
- //@PreAuthorize("hasRole('ADMIN')")
-  public Optional<Filme> updateFilme(@RequestBody Filme filme, @PathVariable(value= "filmeId") long filmeId){
-    Optional<Filme> opt = this.getFilme(filmeId);
-    if (opt.isPresent() && opt.get().getId() == filme.getId()){
-      return Optional.of(repository.save(filme));
-    } throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao alterar dados do filme com id" + filmeId);
+  // @PreAuthorize("hasRole('ADMIN')")
+  public Filme updateFilme(@RequestBody Filme filme, @PathVariable(value = "filmeId") long filmeId) {
+    Optional<Filme> optFilme = repository.findById(filmeId);
+    if (optFilme.isPresent()) {
+      Filme filmeExistente = optFilme.get();
+      if (filmeExistente.getId() == filmeId) {
+        // Atualiza as propriedades do filme existente com as do filme fornecido
+        filmeExistente.setTitulo(filme.getTitulo());
+        filmeExistente.setAnoLancamento((filme.getAnoLancamento()));
+        filmeExistente.setDiretor(filme.getDiretor());
+        filmeExistente.setElencoPrincipal(filme.getElencoPrincipal());
+        filmeExistente.setPais(filme.getPais());
+        filmeExistente.setUrlCapa(filme.getUrlCapa());
+
+        return repository.save(filmeExistente); // Salva o filme existente com as alterações
+      } else {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            "O ID do filme fornecido não corresponde ao ID na URL.");
+      }
+    } else {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Filme com ID " + filmeId + " não encontrado.");
+    }
   }
 
   @DeleteMapping(value = "/filmes/{id}")
-  //@PreAuthorize("hasRole('ADMIN')")
-  public void deleteFilme(@PathVariable long id){
-    if(repository.findById(id) == null){
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "O servidor não encontrou nada que corresponda ao request.");
+  // @PreAuthorize("hasRole('ADMIN')")
+  public void deleteFilme(@PathVariable long id) {
+    if (repository.findById(id) == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "O servidor não encontrou nada que corresponda ao request.");
     }
     repository.deleteById(id);
   }
 }
-    

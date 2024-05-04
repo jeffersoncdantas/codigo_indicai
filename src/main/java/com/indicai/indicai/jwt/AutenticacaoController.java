@@ -43,7 +43,6 @@ public class AutenticacaoController {
         }
         return ResponseEntity
                 .badRequest()
-                .body(new ErrorMessage("Credenciais Inválidas"));
-                
+                .body(new ErrorMessage("Credenciais Inválidas"));       
     }
 }

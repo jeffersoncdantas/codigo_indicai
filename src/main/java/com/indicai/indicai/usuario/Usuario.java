@@ -29,13 +29,18 @@ public class Usuario implements Serializable {
     @Column(name="password", nullable = false, length = 300)
     private String password;
 
+    @Column(name="anoNascimento", length = 300)
+    private int anoNascimento;
+
+    @Column(name="cidade", length = 300)
+    private String cidade;
+
+    @Column(name="estado", length = 300)
+    private String estado;
+
     @Enumerated(EnumType.STRING)
     @Column(name="role", nullable = false, length = 25)
     private Role role = Role.ROLE_EMPLOYEE;
-
-    private int anoNascimento;
-    private String cidade;
-    private String estado;
 
     @ManyToMany
     private List<Usuario> amigos;
