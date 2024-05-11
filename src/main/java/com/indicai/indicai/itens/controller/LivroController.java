@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,7 +23,7 @@ import com.indicai.indicai.itens.entity.Livro;
 import com.indicai.indicai.itens.repository.LivroRepository;
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/livros")
 public class LivroController {
 
   @Autowired
@@ -29,12 +32,12 @@ public class LivroController {
   public LivroController() {
   }
 
-  @GetMapping("/livros")
+  @GetMapping
   public List<Livro> getLivros() {
     return repository.findAll();
   }
 
-  @GetMapping("/livros/{id}")
+  @GetMapping("/{id}")
   public Optional<Livro> getLivro(@PathVariable long id) {
     Optional<Livro> opt = repository.findById(id);
 
@@ -44,13 +47,13 @@ public class LivroController {
     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao buscar livro com id " + id);
   }
 
-  @PostMapping("/livros")
+  @PostMapping
   // @PreAuthorize("hasRole('ADMIN')")
   public Livro postLivro(@RequestBody Livro livro) {
     return repository.save(livro);
   }
 
-  @PutMapping("/livros/{livroId}")
+  @PutMapping("/{livroId}")
   // @PreAuthorize("hasRole('ADMIN')")
   public Livro updateLivro(@RequestBody Livro livro, @PathVariable(value = "livroId") long livroId) {
     Optional<Livro> optLivro = repository.findById(livroId);
@@ -64,6 +67,7 @@ public class LivroController {
         livroExistente.setUrlCapa(livro.getUrlCapa());
         livroExistente.setAutores(livro.getAutores());
         livroExistente.setEditora(livro.getEditora());
+        livroExistente.setGenero(livro.getGenero());
 
         return repository.save(livroExistente); // Salva o livro existente com as alterações
       } else {
@@ -75,7 +79,7 @@ public class LivroController {
     }
   }
 
-  @DeleteMapping(value = "/livros/{id}")
+  @DeleteMapping(value = "/{id}")
   // @PreAuthorize("hasRole('ADMIN')")
   public void deleteLivro(@PathVariable long id) {
     if (repository.findById(id) == null) {
@@ -84,4 +88,14 @@ public class LivroController {
     }
     repository.deleteById(id);
   }
+
+  @RequestMapping(params = "genero", method = RequestMethod.GET)
+  public ResponseEntity<List<Livro>> getByGenero(@RequestParam("genero") String genero) {
+    List<Livro> livros = repository.findByGeneroNameStartingWith(genero);
+    if (livros.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao buscar livros com o genêro " + genero);
+    }
+    return ResponseEntity.ok(livros);
+  }
+
 }

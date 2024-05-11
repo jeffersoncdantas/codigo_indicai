@@ -3,7 +3,7 @@ package com.indicai.indicai.usuario;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+//import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,6 +82,33 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario.Role buscarRolePorUsername(String username) {
         return usuarioRepository.findRoleByUsername(username);
+    }
+
+    //Funções para fazer amizade:
+    @Transactional
+    public void enviarSolicitaçãoDeAmizade(Long idRemetente, Long idDestinatário) {
+        Usuario remetente = buscarPorId(idRemetente);
+        Usuario destinatário = buscarPorId(idDestinatário);
+
+        if (!remetente.getSolicitaçõesDeAmizadePendentes().contains(destinatário)) {
+            remetente.getSolicitaçõesDeAmizadePendentes().add(destinatário);
+            usuarioRepository.save(remetente);
+        }
+    }
+
+    @Transactional
+    public void aceitarSolicitaçãoDeAmizade(Long idUsuario, Long idRemetente) {
+        Usuario usuário = buscarPorId(idUsuario);
+        Usuario remetente = buscarPorId(idRemetente);
+
+        if (usuário.getSolicitaçõesDeAmizadePendentes().contains(remetente)) {
+            usuário.getSolicitaçõesDeAmizadePendentes().remove(remetente);
+            usuário.getAmigos().add(remetente);
+            remetente.getAmigos().add(usuário);
+
+            usuarioRepository.save(usuário);
+            usuarioRepository.save(remetente);
+        }
     }
 
 }

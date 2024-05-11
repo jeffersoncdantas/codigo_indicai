@@ -7,45 +7,55 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-@Getter @Setter @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-@Table(name="usuarios")
+@Table(name = "usuarios")
 public class Usuario implements Serializable {
-    @Id 
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name="username", nullable = false, unique= true, length = 50)
+    @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(name="password", nullable = false, length = 300)
+    @Column(name = "password", nullable = false, length = 300)
     private String password;
 
-    @Column(name="anoNascimento", length = 300)
+    @Column(name = "anoNascimento", length = 300)
     private int anoNascimento;
 
-    @Column(name="cidade", length = 300)
+    @Column(name = "cidade", length = 300)
     private String cidade;
 
-    @Column(name="estado", length = 300)
+    @Column(name = "estado", length = 300)
     private String estado;
 
     @Enumerated(EnumType.STRING)
-    @Column(name="role", nullable = false, length = 25)
+    @Column(name = "role", nullable = false, length = 25)
     private Role role = Role.ROLE_EMPLOYEE;
 
+    //Amigos
     @ManyToMany
-    private List<Usuario> amigos;
+    @JoinTable(name = "amizades", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "amigo_id"))
+    private List<Usuario> amigos = new ArrayList<>();
 
-    public enum Role{
+    @ManyToMany(mappedBy = "amigos")
+    private List<Usuario> solicitaçõesDeAmizadePendentes = new ArrayList<>();
+
+    public enum Role {
         ROLE_ADMIN, ROLE_EMPLOYEE
     }
 

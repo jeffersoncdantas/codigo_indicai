@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -20,7 +23,7 @@ import com.indicai.indicai.itens.entity.Serie;
 import com.indicai.indicai.itens.repository.SerieRepository;
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api/series")
 public class SerieController {
 
   @Autowired
@@ -29,12 +32,12 @@ public class SerieController {
   public SerieController() {
   }
 
-  @GetMapping("/series")
+  @GetMapping
   public List<Serie> getSeries() {
     return repository.findAll();
   }
 
-  @GetMapping("/series/{id}")
+  @GetMapping("/{id}")
   public Optional<Serie> getSerie(@PathVariable long id) {
     Optional<Serie> opt = repository.findById(id);
 
@@ -44,13 +47,13 @@ public class SerieController {
     throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao buscar serie com id " + id);
   }
 
-  @PostMapping("/series")
+  @PostMapping
   // @PreAuthorize("hasRole('ADMIN')")
   public Serie postSerie(@RequestBody Serie serie) {
     return repository.save(serie);
   }
 
-  @PutMapping("/series/{serieId}")
+  @PutMapping("/{serieId}")
   // @PreAuthorize("hasRole('ADMIN')")
   public Serie updateSerie(@RequestBody Serie serie, @PathVariable(value = "serieId") long serieId) {
     Optional<Serie> optSerie = repository.findById(serieId);
@@ -65,6 +68,7 @@ public class SerieController {
         serieExistente.setDiretor(serie.getDiretor());
         serieExistente.setElencoPrincipal(serie.getElencoPrincipal());
         serieExistente.setNumeroTemporadas(serie.getNumeroTemporadas());
+        serieExistente.setGenero(serie.getGenero());
 
         return repository.save(serieExistente); // Salva a série existente com as alterações
       } else {
@@ -76,7 +80,7 @@ public class SerieController {
     }
   }
 
-  @DeleteMapping(value = "/series/{id}")
+  @DeleteMapping(value = "/{id}")
   // @PreAuthorize("hasRole('ADMIN')")
   public void deleteSerie(@PathVariable long id) {
     if (repository.findById(id) == null) {
@@ -85,4 +89,14 @@ public class SerieController {
     }
     repository.deleteById(id);
   }
+
+  @RequestMapping(params = "genero", method = RequestMethod.GET)
+  public ResponseEntity<List<Serie>> getByGenero(@RequestParam("genero") String genero) {
+    List<Serie> series = repository.findByGeneroNameStartingWith(genero);
+    if (series.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao buscar series com o genêro " + genero);
+    }
+    return ResponseEntity.ok(series);
+  }
+
 }
