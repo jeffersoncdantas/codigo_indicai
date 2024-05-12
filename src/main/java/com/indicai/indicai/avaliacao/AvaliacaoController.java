@@ -1,4 +1,5 @@
 package com.indicai.indicai.avaliacao;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -25,35 +26,39 @@ public class AvaliacaoController {
   @Autowired
   private AvaliacaoRepository repository;
 
-  public AvaliacaoController(){}
+  public AvaliacaoController() {
+  }
 
   @GetMapping("/avaliacoes")
   public List<Avaliacao> getAvaliacoes() {
-      return repository.findAll();
+    return repository.findAll();
   }
 
   @GetMapping("/avaliacoes/{id}")
   public Optional<Avaliacao> getAvaliacao(@PathVariable long id) {
-      Optional<Avaliacao> opt = repository.findById(id);
-      
-      if(opt.isPresent()){
-          return opt;
-      } throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao buscar avaliacao com id " + id);
-  } 
+    Optional<Avaliacao> opt = repository.findById(id);
 
-  @PutMapping("/avaliacoes/{avaliacaoId}")
-  public Optional<Avaliacao> updateAvaliacao(@RequestBody Avaliacao avaliacao, @PathVariable(value= "avaliacaoId") long avaliacaoId){
-    Optional<Avaliacao> opt = this.getAvaliacao(avaliacaoId);
-    if (opt.isPresent() && opt.get().getId() == avaliacao.getId()){
-      return Optional.of(repository.save(avaliacao));
-    } throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao alterar dados do avaliacao com id" + avaliacaoId);
+    if (opt.isPresent()) {
+      return opt;
+    }
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao buscar avaliacao com id " + id);
   }
 
-    
+  @PutMapping("/avaliacoes/{avaliacaoId}")
+  public Optional<Avaliacao> updateAvaliacao(@RequestBody Avaliacao avaliacao,
+      @PathVariable(value = "avaliacaoId") long avaliacaoId) {
+    Optional<Avaliacao> opt = this.getAvaliacao(avaliacaoId);
+    if (opt.isPresent() && opt.get().getId() == avaliacao.getId()) {
+      return Optional.of(repository.save(avaliacao));
+    }
+    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Erro ao alterar dados do avaliacao com id" + avaliacaoId);
+  }
+
   @DeleteMapping(value = "/avaliacoes/{id}")
-  public void deleteAvaliacao(@PathVariable long id){
-    if(repository.findById(id) == null){
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "O servidor não encontrou nada que corresponda ao request.");
+  public void deleteAvaliacao(@PathVariable long id) {
+    if (repository.findById(id) == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+          "O servidor não encontrou nada que corresponda ao request.");
     }
     repository.deleteById(id);
   }
@@ -62,17 +67,22 @@ public class AvaliacaoController {
   public List<Avaliacao> getAvaliacoesByFilmeId(@PathVariable Long itemId, @PathVariable String tipoItem) {
     if ("filmes".equals(tipoItem)) {
       return repository.findByItemIdAndItemType(itemId, Filme.class);
-  } else if ("livros".equals(tipoItem)) {
+    } else if ("livros".equals(tipoItem)) {
       return repository.findByItemIdAndItemType(itemId, Livro.class);
-  } else if ("series".equals(tipoItem)) {
+    } else if ("series".equals(tipoItem)) {
       return repository.findByItemIdAndItemType(itemId, Serie.class);
-  } 
+    }
     return repository.findByItemIdAndItemType(itemId, Filme.class);
   }
-  
+
   @PostMapping("/avaliacoes")
   public Avaliacao postAvaliacao(@RequestBody Avaliacao avaliacao) {
-      return repository.save(avaliacao);
+    return repository.save(avaliacao);
+  }
+
+  @GetMapping("/avaliacoes/usuario/{userId}")
+  public List<Avaliacao> getAvaliacoesByUserId(@PathVariable Long userId) {
+    return repository.findByUserId(userId);
   }
 
 }

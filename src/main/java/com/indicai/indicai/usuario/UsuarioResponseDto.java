@@ -1,6 +1,6 @@
 package com.indicai.indicai.usuario;
 
-import java.util.List;
+//import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class UsuarioResponseDto {
     private int anoNascimento;
     private String cidade;
     private String estado;
-    private List<Usuario> amigos;
+    //private List<Usuario> amigos;
     
 
 }

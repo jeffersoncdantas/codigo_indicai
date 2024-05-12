@@ -17,20 +17,6 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // @Transactional
-    // public Usuario salvar(Usuario usuario) {
-    // try {
-    // usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-    // usuario.setAnoNascimento(usuario.getAnoNascimento());
-    // usuario.setCidade(usuario.getCidade());
-    // usuario.setEstado(usuario.getEstado());
-    // return usuarioRepository.save(usuario);
-    // } catch (org.springframework.dao.DataIntegrityViolationException ex) {
-    // throw new UsernameNotFoundException(String.format("Username '%s' já
-    // cadastrado", usuario.getUsername()));
-    // }
-    // }
-
     @Transactional
     public Usuario salvar(Usuario usuario) {
         if (usuario.getId() != null) {
@@ -82,33 +68,6 @@ public class UsuarioService {
     @Transactional(readOnly = true)
     public Usuario.Role buscarRolePorUsername(String username) {
         return usuarioRepository.findRoleByUsername(username);
-    }
-
-    //Funções para fazer amizade:
-    @Transactional
-    public void enviarSolicitaçãoDeAmizade(Long idRemetente, Long idDestinatário) {
-        Usuario remetente = buscarPorId(idRemetente);
-        Usuario destinatário = buscarPorId(idDestinatário);
-
-        if (!remetente.getSolicitaçõesDeAmizadePendentes().contains(destinatário)) {
-            remetente.getSolicitaçõesDeAmizadePendentes().add(destinatário);
-            usuarioRepository.save(remetente);
-        }
-    }
-
-    @Transactional
-    public void aceitarSolicitaçãoDeAmizade(Long idUsuario, Long idRemetente) {
-        Usuario usuário = buscarPorId(idUsuario);
-        Usuario remetente = buscarPorId(idRemetente);
-
-        if (usuário.getSolicitaçõesDeAmizadePendentes().contains(remetente)) {
-            usuário.getSolicitaçõesDeAmizadePendentes().remove(remetente);
-            usuário.getAmigos().add(remetente);
-            remetente.getAmigos().add(usuário);
-
-            usuarioRepository.save(usuário);
-            usuarioRepository.save(remetente);
-        }
     }
 
 }

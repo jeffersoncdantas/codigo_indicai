@@ -52,25 +52,10 @@ public class UsuarioController {
   }
 
   @GetMapping
-  //@PreAuthorize("hasRole('ADMIN')")
+  // @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<List<Usuario>> getUsuarios() {
     List<Usuario> users = usuarioService.buscarTodos();
     return ResponseEntity.ok(users);
-  }
-
-  // Funções para fazer amigos
-  @PutMapping("/{idRemetente}/solicitar-amizade/{idDestinatario}")
-  public ResponseEntity<Void> enviarSolicitaçãoDeAmizade(@PathVariable Long idRemetente,
-      @PathVariable Long idDestinatario) {
-    usuarioService.enviarSolicitaçãoDeAmizade(idRemetente, idDestinatario);
-    return ResponseEntity.ok().build();
-  }
-
-  @PutMapping("/{idDestinatario}/aceitar-amizade/{idRemetente}")
-  public ResponseEntity<Void> aceitarSolicitaçãoDeAmizade(@PathVariable Long idDestinatario,
-      @PathVariable Long idRemetente) {
-    usuarioService.aceitarSolicitaçãoDeAmizade(idDestinatario, idRemetente);
-    return ResponseEntity.ok().build();
   }
 
 }
