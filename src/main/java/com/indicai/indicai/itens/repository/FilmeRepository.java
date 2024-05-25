@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface FilmeRepository extends JpaRepository<Filme, Long> {
     List<Filme> findByGeneroNameStartingWith(String name);
+
+    
   
 }

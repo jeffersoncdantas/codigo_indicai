@@ -77,5 +77,17 @@ public class GeneroController {
     }
     repository.deleteById(id);
   }
+
+  // @GetMapping("/itens/{tipoItem}/{generoId}")
+  // public List<Item> getItensByGenero(@PathVariable Long generoId, @PathVariable String tipoItem) {
+  //   if ("filmes".equals(tipoItem)) {
+  //     return repository.findByGeneroIdAndItemType(generoId, Filme.class);
+  //   } else if ("livros".equals(tipoItem)) {
+  //     return repository.findByGeneroIdAndItemType(generoId, Livro.class);
+  //   } else if ("series".equals(tipoItem)) {
+  //     return repository.findByGeneroIdAndItemType(generoId, Serie.class);
+  //   }
+  //   throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo de item inválido: " + tipoItem);
+  // }
   
 }
