@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-//import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,13 +45,13 @@ public class GeneroController {
   }
 
   @PostMapping
-  // @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN')")
   public Genero postGenero(@RequestBody Genero genero) {
     return repository.save(genero);
   }
 
   @PutMapping("/{generoId}")
-  // @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN')")
   public Genero updateGenero(@RequestBody Genero genero, @PathVariable(value = "generoId") long generoId) {
     Optional<Genero> optGenero = repository.findById(generoId);
     if (optGenero.isPresent()) {
@@ -69,7 +69,7 @@ public class GeneroController {
   }
 
   @DeleteMapping(value = "/{id}")
-  // @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN')")
   public void deleteGenero(@PathVariable long id) {
     if (repository.findById(id) == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND,

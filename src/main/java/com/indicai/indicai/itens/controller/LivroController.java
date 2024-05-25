@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,13 +48,13 @@ public class LivroController {
   }
 
   @PostMapping
-  // @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN')")
   public Livro postLivro(@RequestBody Livro livro) {
     return repository.save(livro);
   }
 
   @PutMapping("/{livroId}")
-  // @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN')")
   public Livro updateLivro(@RequestBody Livro livro, @PathVariable(value = "livroId") long livroId) {
     Optional<Livro> optLivro = repository.findById(livroId);
     if (optLivro.isPresent()) {
@@ -80,7 +80,7 @@ public class LivroController {
   }
 
   @DeleteMapping(value = "/{id}")
-  // @PreAuthorize("hasRole('ADMIN')")
+  @PreAuthorize("hasRole('ADMIN')")
   public void deleteLivro(@PathVariable long id) {
     if (repository.findById(id) == null) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND,
