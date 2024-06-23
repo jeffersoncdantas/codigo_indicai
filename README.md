@@ -1,6 +1,13 @@
-# Código Indicai - Backend
+# Código Indicai - Back End
 
 Este repositório contém o código do backend para o projeto Indicai. O Indicai é o projeto final da matéria Prática Profissional em Análise e Desenvolvimento de Sistemas. O sistema foi concebido e desenvolvido para permitir a indicação e avaliação de séries, filmes e livros. Os usuários podem avaliar esses itens, enquanto o administrador do sistema pode incluí-los.
+
+# Tecnologias utilizadas:
+ * Java
+ * Springboot
+ * Maven
+ * Banco de dados SQL Postgres
+ * Docker
 
 Link e instruções para utilização da API:
 
