@@ -9,11 +9,10 @@ Este repositório contém o código do backend para o projeto Indicai. O Indicai
  * Banco de dados SQL Postgres
  * Docker
 
-Link e instruções para utilização da API:
+# Link e instruções para utilização da API:
+ * URL: https://indicai.onrender.com/api
 
-# URL: https://indicai.onrender.com/api
-
-**Sempre fique dando refresh na url acima, pois o render derruba rapido**
+**Sempre faça um refresh na url acima, pois o render derruba rapido**
 
 # Avaliação
 
